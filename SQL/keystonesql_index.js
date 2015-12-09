@@ -1,5 +1,27 @@
 var KeystoneSQL = require("./KeystoneSQL");
 
+function sql_querycallback(err,result){
+  if (err){
+    console.log("sql callback err")
+    return console.log(err);
+  }
+  if(result.datatype=="database"){
+    console.log("---"+result.datatype+"---");
+    for(i=0,count=result.length;i<count;i++){
+      console.log(result[i].DB_NAME);
+    }
+  }else if (result.datatype=="table") {
+    console.log("---"+result.datatype+"---");
+    for(i=0,count=result.length;i<count;i++){
+      console.log(result[i].TABLE_NAME);
+    }
+  }else if (result.datatype=="column") {
+    console.log("---"+result.datatype+"---");
+    for(i=0,count=result.length;i<count;i++){
+      console.log(result[i].COLUMN_NAME+":"+result[i].DATA_TYPE);
+    }
+  }
+};
 //-------------------------------------mysql----------------------------------------
 var mysql_config = {
     host: '192.168.58.131',
@@ -8,18 +30,10 @@ var mysql_config = {
     //database:'JYDB',
     port: 3306
 };
-function mysql_querycallback(err,result){
-  if (err){
-    console.log("mysql callback err")
-    return console.log(err);
-  }
-  console.log("this is mysql callback")
-  console.log(result);
-};
 var keystonesql=KeystoneSQL.createNew("mysql",mysql_config);
-//keystonesql.getDatabase(mysql_querycallback);
-//keystonesql.getDataTable("JYDB",mysql_querycallback);
-keystonesql.getTableFileds("JYDB","QT_IndexQuote",mysql_querycallback);
+keystonesql.getDatabase(sql_querycallback);
+keystonesql.getDataTable("JYDB",sql_querycallback);
+keystonesql.getTableFileds("JYDB","QT_IndexQuote",sql_querycallback);
 //------------------------------mssql----------------------------------------
 var mssql_config = {
     user: 'jydb',
@@ -30,15 +44,7 @@ var mssql_config = {
         //encrypt: true // Use this if you're on Windows Azure
     }
 }
-function mssql_querycallback(err,recordset){
-  if (err){
-    console.log("mssql callback err")
-    return console.log(err);
-  }
-  console.log("this is mssql callback")
-  console.log(recordset);
-};
 var keystonesql2=KeystoneSQL.createNew("mssql",mssql_config);
-//keystonesql2.getDatabase(mssql_querycallback);
-//keystonesql2.getDataTable("JYDB",mssql_querycallback);
-keystonesql2.getTableFileds("JYDB","QT_IndexQuote",mssql_querycallback);
+keystonesql2.getDatabase(sql_querycallback);
+keystonesql2.getDataTable("JYDB",sql_querycallback);
+keystonesql2.getTableFileds("JYDB","QT_IndexQuote",sql_querycallback);
